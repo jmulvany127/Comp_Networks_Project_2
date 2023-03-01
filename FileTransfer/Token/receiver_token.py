@@ -37,21 +37,35 @@ while 1:
             exit()
     #else if it does exist read token values and compare against ones in db,if it doesnt exist add it.
     else:
-        with open ('token.txt',"r+") as f:
-            content =f.readline()
-            #print (content)
-            contentsplit = content.split(",")
-            tkn = int(contentsplit[2])
-            print(tkn)
-            print(int(token))
-            if int(token) == tkn :
-                print("Token is in database")
-                f.close  
-        
-    with open("token.txt","r+") as f:
-        print(addr[0],",", port,",",token,file=f)
+        f=open("token.txt","r")
+        lines= f.readlines()
+        count = 0
+        for line in lines:
+            count +=1
         f.close
-        print("token.txt was written to")
+        print(count)
+
+        with open ('token.txt',"r+") as f:
+            #content =f.readline()
+            #print(content)
+            for x in range(count):
+                content=f.readline()
+                contentsplit = content.split(",")
+                tkn = int(contentsplit[2])
+                #print(tkn)
+                #print(int(token))
+                if int(token) == tkn :
+                    print("Token is in database")
+                    f.close
+                    exit() 
+                
+            with open("token.txt","r+") as f:
+                for x in range(count):
+                    print(lines[x].strip(),file=f)
+                print(addr[0],",", port,",",token,file=f)
+                f.close
+                print("token.txt was written to")
+            exit()
 exit()
     
 serverSocket.close
