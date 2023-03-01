@@ -6,15 +6,15 @@ import threading
 l_ip = '127.0.0.1'   #local ip
 ip = '127.0.0.1'     #dest ip
 
-l_port = 50002       #listening port
-s_port = 50003       #source port for sender
-d_port = 50004       #destination port for sender
+udp_l_port = 50004       #listening port
+udp_s_port = 50001       #source port for sender
+udp_d_port = 50002       #destination port for sender
 
 
 # function opens a socket and is always listening, ready to receive messages
 def listen():
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind((l_ip, l_port))
+    sock.bind((l_ip, udp_l_port))
     print ('listening')
     
     while True:
@@ -27,10 +27,10 @@ listener.start()
 
 #opens the sending socket 
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-sock.bind((l_ip, s_port))
+sock.bind((l_ip, udp_s_port))
 
 #reads in input and sends to peer
 print ('talk to your friends!')
 while True:
     msg = input('> ')
-    sock.sendto(msg.encode(), (ip, d_port))
+    sock.sendto(msg.encode(), (ip, udp_d_port))
