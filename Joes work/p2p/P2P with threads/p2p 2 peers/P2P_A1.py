@@ -27,7 +27,6 @@ p1_adr = (ip, 50011)    #tcp peer 1 server address
 token = '2' 
 p1 = '1'
 
-
              
 #starts a new thread that runs the listening function
 def server():
