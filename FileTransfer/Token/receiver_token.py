@@ -6,9 +6,6 @@ serverPort =12075
 SEPARATOR = "<SEPARATOR>"
 mytoken=10001
 
-
-
-
 serverSocket = socket (AF_INET,SOCK_STREAM)
 serverSocket.bind (('',serverPort))
 
@@ -30,7 +27,7 @@ while 1:
     received = connectionSocket.recv(65536).decode()
     port, token = received.split(SEPARATOR)
     #if token doesnt exist write here rn
-    if os.path.isfile(path) != True:
+    if os.path.isfile("token.txt") != True:
         with open("token.txt","w") as f:
             print(addr[0],",", port,",",token,file=f)
             f.close
@@ -43,8 +40,6 @@ while 1:
         for line in lines:
             count +=1
         f.close
-        print(count)
-
         with open ('token.txt',"r+") as f:
             #content =f.readline()
             #print(content)
@@ -65,6 +60,7 @@ while 1:
                 print(addr[0],",", port,",",token,file=f)
                 f.close
                 print("token.txt was written to")
+                #print(token)
             exit()
 exit()
     
