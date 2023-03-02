@@ -4,19 +4,18 @@ import sys
 import threading
 import tqdm
 import os
+import os.path
 import time
 
 BUFFER_SIZE = 65536
 SEPARATOR = "<SEPARATOR>"
 
 #file location and name
-filedirectiory=("C:\\Users\\jsmul\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Server Connect")
-filename = ("masterpiece.png")
-filepath = ("C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Server Connect\\masterpiece.png")
+#filedirectiory=("C:\\Users\\jsmul\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Server Connect")
+#filename = ("masterpiece.png")
+filepath = 'C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Joes work\\p2p\\P2P with threads\\p2p 4 peers with files\\DataBase_A\\DATABASE.txt'
 
 filesize = os.path.getsize(filepath)
-
-
 
 #Tokens
 token = '1' 
@@ -75,13 +74,14 @@ def file_server():
     filesize = int(filesize)
     
     progress = tqdm.tqdm(range(filesize), f"Receiving {filename}", unit="B", unit_scale=True, unit_divisor=1024)
-    with open(filename, "wb") as f:
-        while True:
-            bytes_read = client_socket.recv(BUFFER_SIZE)
-            if not bytes_read:
-                break
-            f.write(bytes_read)
-            progress.update(len(bytes_read))
+   
+    while True:
+        bytes_read = client_socket.recv(BUFFER_SIZE)
+        if not bytes_read:
+            break
+        f = open(filepath, "wb")
+        f.write(bytes_read)
+        progress.update(len(bytes_read))
     client_socket.close()
     file_server.close()
 

@@ -1,10 +1,11 @@
+import os.path
 
-token = '1' 
+save_path = 'C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Joes work\\p2p\\P2P with threads\\p2p 4 peers\\rcvd_A\\DATABASE.TXT' 
 
+file1 = open(save_path, "wb")
 
-def  tester():
+toFile = input("Write what you want into the field ")
 
-    tcp_s_port = (50000 + 10*int(token))
-    print (f"{tcp_s_port}")
+file1.write(toFile)
 
-tester()
+file1.close()
