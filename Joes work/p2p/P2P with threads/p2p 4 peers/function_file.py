@@ -46,7 +46,7 @@ def token_insert(ip,port,token):
 
 
 
-#turns token value into ip address and port value
+#turns token value into ip address and port value by reading token.txt
 def ip_fetcher(token):
     f=open("token.txt","r")
     lines= f.readlines()
@@ -139,25 +139,25 @@ def splitting(numbers):
     numbercorrected = [x - 1 for x in number]
     return numbercorrected
 
-
-
-#i added number check that checks if the number is a number and if the number is positive
-def main():
-    print("enter peer number which you want to connect to")
-    numbers = input("")
-    number_check(numbers)
-    correctnums = splitting(numbers)
+#function 1 works BUT ONLY WITH AN INPUT look at main underneath, that is how i got it to work. what ever number is must be inputed from a user to work
+def peer_to_ip_and_port(number):
+    number_check(number)
+    correctnums =splitting(number)
     storage = []
     ip = []
     port =[]
     storage = addres_arrays(correctnums)
     ip = ip_array(storage)
     port = port_array(storage)
-    print("ip fetcher")
-    content =ip_fetcher(1939721501944343189)
-    print(content)
-    
+    #shouldnt need to anything else as ip+port should be in the global array but declared in there respective functions idk at this point
 
+
+"""
+#function 1 example
+def main():
+    print("enter peer number which you want to connect to")
+    numbers = input("")
+    peer_to_ip_and_port(numbers)
+    print(portfull,ipfull)
 main()
-
-
+"""
