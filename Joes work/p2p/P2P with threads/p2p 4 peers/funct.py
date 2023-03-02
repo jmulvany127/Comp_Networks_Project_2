@@ -2,12 +2,17 @@
 print("enter peer number/s which you want to connect to, if more than one add a , between the numbers")
 numbers = input("")
 
-numberssplit = numbers.split(",")
-print(numberssplit)
-number= list(map(int,numberssplit))
-print (number)
-numbercorrected = [x - 1 for x in number]
-print(numbercorrected)
+
+
+
+
+def splitting(numbers):
+    numberssplit = numbers.split(",")
+    print(numberssplit)
+    number= list(map(int,numberssplit))
+    print (number)
+    numbercorrected = [x - 1 for x in number]
+    print(numbercorrected)
 
 
 store=[]
