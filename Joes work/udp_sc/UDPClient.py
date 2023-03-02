@@ -4,7 +4,7 @@ serverPort = 12010
 
 clientSocket = socket(AF_INET, SOCK_DGRAM)
 
-message = input('Input lowercase sentence: ').encode('utf-8')
+message = input('Input peer message: \n ').encode('utf-8')
 
 clientSocket.sendto(message,(serverName, serverPort))
 
