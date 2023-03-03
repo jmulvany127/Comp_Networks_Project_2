@@ -1,6 +1,5 @@
 
 import socket
-import sys
 import threading
 import tqdm
 import os
@@ -21,7 +20,7 @@ upper = 99999999999999
 lower = 100000
 #file location and size
 filepath = "C:\\CSU23021\\Comp_Networks_Project_2\\Final v2\\DataBase_A\\DATABASE.txt"
-filesize = os.path.getsize(filepath)
+#filesize = os.path.getsize(filepath)
 
 #Tokens to be replaced
 ##token gen implemented
@@ -34,7 +33,7 @@ connections = 0
 
 #ip and port numbers
 l_ip = '172.20.10.2'   #local ip
-ip = '172.20.10.2'     #dest ip
+
 
 udp_l_port = (50000 + int(my_p_num))     #listening port
 udp_s_port = (50100 +  int(my_p_num))     #source port for sender
@@ -81,25 +80,26 @@ def file_server():
     file_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     file_server.bind(tcp_s_adr)
     file_server.listen(10)
-    
     print(f"[*] Listening as file server {tcp_s_adr}")
     client_socket, address = file_server.accept()
     print(f"[+] {address} is connected.")
     received = client_socket.recv(BUFFER_SIZE).decode()
-    filename, filesize = received.split(SEPARATOR)
-    
-    filename = os.path.basename(filename)
+    filesize, x = received.split(SEPARATOR)
+    #print(received)
+    #print(filesize)    
+    #filename = os.path.basename(filename)
     filesize = int(filesize)
     #progress bar
-    progress = tqdm.tqdm(range(filesize), f"Receiving {filename}", unit="B", unit_scale=True, unit_divisor=1024)
+    progress = tqdm.tqdm(range(filesize), f"Receiving file:", unit="B", unit_scale=True, unit_divisor=1024)
     #while loop reads in bytes, saves bytes and then overwrites local file with these bytes 
-    while True:
-        bytes_read = client_socket.recv(BUFFER_SIZE)
-        if not bytes_read:
-            break
-        f = open(filepath, "wb")
-        f.write(bytes_read)
-        progress.update(len(bytes_read))
+  
+    print(x) 
+    bytes_read = bytes(x,"utf-8")
+    #if not bytes_read:
+    #    break
+    f = open(filepath, "wb")
+    f.write(bytes_read)
+    progress.update(len(bytes_read))
     client_socket.close()
     file_server.close()
     
@@ -109,11 +109,11 @@ def file_server():
 
 #function opened in new thread
 #function sets up an always on udp server socket for receiving messages from peers  
-def listen():
+def listen():\
     
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((l_ip, udp_l_port))
-    print ('listening',(print({l_ip},{udp_l_port})))
+    #print ('listening',({l_ip},{udp_l_port}))
     
     
     while True:
@@ -177,7 +177,7 @@ def listen():
             
             global p_addr
             p_addr = (str(d_ip), p_port)
-            #print(f"new peer address received {p_addr}") #debug
+            print(f"new peer address received {p_addr}") #debug
             global rcved
             
             #upate the received variable
@@ -189,12 +189,11 @@ def listen():
 #function to send typed messages to peer
 def send_message( udp_d_port):
             #opens the udp sending socket 
-            print(udp_d_port)
             send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             send_sock.bind((l_ip, udp_s_port))
             
-            print(udp_d_port)
-            print(d_ip)
+            #print(udp_d_port)
+            #print(d_ip)
             
             d_adr = (str(d_ip),udp_d_port)
             #print(d_adr)
@@ -224,7 +223,7 @@ def send_message( udp_d_port):
                     msg = input('Input peer message: \n ').encode('utf-8')
                     s.send(msg)
                     s.close()
-                    
+                    rcved = False
                     p_port = 50000
                     break 
         
@@ -249,10 +248,12 @@ def send_file( udp_d_port):
      print(f"waiting for the peer socket address")
      while True:
         if (rcved == True):
+            filesize = os.path.getsize(filepath)
             #open tcp client and sends filename and size to peer tcp peer 
             s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+            print(p_addr)
             s.connect((p_addr))
-            s.send(f"{filepath}{SEPARATOR}{filesize}".encode())
+            s.send(f"{filesize}{SEPARATOR}".encode())
             
             #prints local progress message
             filename = os.path.basename(filepath)
@@ -267,7 +268,7 @@ def send_file( udp_d_port):
                     s.sendall(bytes_read)
                     progress.update(len(bytes_read))
             s.close()
-    
+            rcved = False
             p_port = 50000
             break 
 
@@ -325,12 +326,11 @@ def main():
             else:
                 udp_d_port = int(port[0])
             
-            print(f"{udp_d_port}\n")
+                #print(f"{udp_d_port}\n")
             print("Commands: 'msg' -talk to peer, 'file', send database to peer")
             cmd = input('Enter command: \n')
             
             if (cmd == 'msg'):
-                print(udp_d_port,d_ip)
                 send_message( udp_d_port)
             elif(cmd == 'file'):
                 send_file( udp_d_port)
