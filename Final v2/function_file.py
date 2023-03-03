@@ -1,3 +1,5 @@
+##function file add database , add p2p a1 listen return false to all files
+## function that requests a database update,get tokens
 import os.path
 
 

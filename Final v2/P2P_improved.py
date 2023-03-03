@@ -20,7 +20,7 @@ port = []
 upper = 99999999999999
 lower = 100000
 #file location and size
-filepath = "C:\\CSU23021\\Comp_Networks_Project_2\\Final_v1\\Node_3\\DataBase_C\\DATABASE.txt"
+filepath = "C:\\CSU23021\\Comp_Networks_Project_2\\Final v2\\DataBase_A\\DATABASE.txt"
 filesize = os.path.getsize(filepath)
 
 #Tokens to be replaced
@@ -212,7 +212,7 @@ def send_message( udp_d_port):
             
             time.sleep(0.2)
             #waits for peer to send back the tcp port number, received will be true here
-            #print(f"waiting for the peer socket address")
+            print(f"waiting for the peer socket address")
             while True:
                 if (rcved == True):
                     #open tcp client and send message to peer tcp peer 
@@ -245,7 +245,7 @@ def send_file( udp_d_port):
      
      time.sleep(0.2)
      #waits for peer to send back the tcp port number, received will be true here
-     #print(f"waiting for the peer socket address")
+     print(f"waiting for the peer socket address")
      while True:
         if (rcved == True):
             #open tcp client and sends filename and size to peer tcp peer 
@@ -308,27 +308,31 @@ def main():
   
     time.sleep(0.2)
     while True:  
-        peer = input('Enter peer number:\n')
-        check = peer_to_ip_and_port(peer)
-        #print(check)
-        if(check == False):
-            continue
-        else:
-            
-            udp_d_port = int(port[0])
-        
-            #print(f"{udp_d_port}\n")
-            print("Commands: 'msg' -talk to peer, 'file', send database to peer, 'view' view the current database, 'add' to add to the database")
-            cmd = input('Enter command: \n')
-        
-        if (cmd == 'msg'):
-            send_message( udp_d_port)
-        elif(cmd == 'file'):
-            send_file( udp_d_port)
-        elif(cmd == 'view'):
+        print("Commands: 'cnct' -connect to peers to peer, 'view' view the current database, 'add' to add to the database")
+        cmd = input('Enter command: \n')
+
+        if(cmd == 'view'):
             print_Dbase()
         elif(cmd == "add"):
             database_insert(filepath)
+        elif (cmd == 'cnct'):
+            peer = input('Enter peer number:\n')
+            check = peer_to_ip_and_port(peer)
+            #print(check)
+            if(check == False):
+                continue
+            else:
+                udp_d_port = int(port[0])
+            
+                #print(f"{udp_d_port}\n")
+            print("Commands: 'msg' -talk to peer, 'file', send database to peer")
+            cmd = input('Enter command: \n')
+            
+            if (cmd == 'msg'):
+                send_message( udp_d_port)
+            elif(cmd == 'file'):
+                send_file( udp_d_port)
+
             
         
 if __name__ == "__main__":

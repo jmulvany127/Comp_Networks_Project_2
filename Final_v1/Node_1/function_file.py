@@ -1,5 +1,62 @@
 import os.path
 
+
+#adds name, apperance, last_seen,status into the database,
+def database_insert():
+    #if token doesnt exist write here rn
+        if os.path.isfile("DATABASE.txt") != True:
+            with open("DATABASE.txt","w") as f:
+                print("People:",file=f)
+                print("Name, Apperance, Last Seen, Status",file=f)
+                f.close
+                return
+        else: 
+            f=open("DATABASE.txt","r")
+            lines= f.readlines()
+            count = 0
+            for line in lines:
+                count +=1
+            f.close
+            with open ("DATABASE.txt","r+") as f:
+                first =input ("do you wish to add to database (y/n):")
+                if (first == "y"):
+                     name =input("type in the persons name,If this is unkown, leave this section blank:")
+                     apperance= input("type in the persons Apperance,If this is unkown, leave this section blank:")
+                     seen_last =input("type in the persons last seen,If this is unkown, leave this section blank:")
+                     status = input("type in the persons status,If this is unkown, leave this section blank:")
+                for x in range(count):
+                    print(lines[x].strip(),file=f)
+                print(name,apperance,seen_last,status,file=f)
+                print()
+                f.close
+                print("Database was written to")
+                #print(token)
+                return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ###i was able to get this function to work combined with sender_token sending into receiver_token. I think it works
 ##ip address should probably be taken from serversocket.accept, i think i see it taken from it, address[0] or something like that
 #create token.txt, if token.txt already exists, it will open token.txt, if the token is already in the file it will do nothing,if the token is not in the file it will add it, it requires ip address,port,token, addr[0] was were the ip address was stored,you may need to fix this function before it works
@@ -70,7 +127,7 @@ def ip_fetcher(token):
                     f.close
                     #print (storage)
                     return storage  
-            print("token was not found in database")  
+            print("Token is invalid,peer has been rejected")  
             return False
 
 

@@ -1,6 +1,5 @@
 
 import socket
-import sys
 import threading
 import tqdm
 import os
@@ -20,9 +19,8 @@ port = []
 upper = 99999999999999
 lower = 100000
 #file location and size
-filepath = 'C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Joes work\\p2p\\P2P with threads\\p2p 4 peers with files\\DataBase_A\\DATABASE.txt'
+filepath = "C:\\CSU23021\\Comp_Networks_Project_2\\Final_v1\\Node_1\\DataBase_A\\DATABASE.txt"
 filesize = os.path.getsize(filepath)
-
 #Tokens to be replaced
 
 my_p_num = '1' 
@@ -127,7 +125,8 @@ def listen():
             #print(f'peer:{result[0]} {result[1]} connected\n')
     
             if (result == False):
-                continue
+                print("Enter peer number:")
+                return
             else:
                 print(f'peer:{result[0]} {result[1]} connected\n')
                 
