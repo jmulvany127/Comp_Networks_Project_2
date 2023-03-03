@@ -18,23 +18,24 @@ def database_insert(filepath):
             for line in lines:
                 count +=1
             f.close
-            first =input ("do you wish to add to database (y/n):")
-            if (first != "y"):
-                     return
-            else:
-                    name =input("type in the persons name,If this is unkown, leave this section blank:")
-                    apperance= input("type in the persons Apperance,If this is unkown, leave this section blank:")
-                    seen_last =input("type in the persons last seen,If this is unkown, leave this section blank:")
-                    status = input("type in the persons status,If this is unkown, leave this section blank:")
-                    with open (filepath,"r+") as f:
-                        for x in range(count):
-                            print(lines[x].strip(),file=f)
-                            #print(line)
-                        print(name,",",apperance,",",seen_last,",",status,file=f)
-                        f.close
-                        print("Database was written to")
+            with open (filepath,"r+") as f:
+                first =input ("do you wish to add to database (y/n):")
+                if (first == "y"):
+                     name =input("type in the persons name,If this is unkown, leave this section blank:")
+                     apperance= input("type in the persons Apperance,If this is unkown, leave this section blank:")
+                     seen_last =input("type in the persons last seen,If this is unkown, leave this section blank:")
+                     status = input("type in the persons status,If this is unkown, leave this section blank:")
+                #added else might break function
+                else:
+                    return
+                for x in range(count):
+                    print(lines[x].strip(),file=f)
+                print(name,",",apperance,",",seen_last,",",status,file=f)
+                print()
+                f.close
+                print("Database was written to")
                 #print(token)
-                        return
+                return
 ###i was able to get this function to work combined with sender_token sending into receiver_token. I think it works
 ##ip address should probably be taken from serversocket.accept, i think i see it taken from it, address[0] or something like that
 #create token.txt, if token.txt already exists, it will open token.txt, if the token is already in the file it will do nothing,if the token is not in the file it will add it, it requires ip address,port,token, addr[0] was were the ip address was stored,you may need to fix this function before it works

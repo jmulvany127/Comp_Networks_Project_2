@@ -25,36 +25,24 @@ filepath = "C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer 
 #Tokens to be replaced
 ##token gen implemented
 ##assuming my_p_numb is where in the master token list where the peer is i.e. this peer is number 3 on the list.
-my_p_num = '2' 
-my_token = 2
+my_p_num = '3' 
+my_token = 3
 
 #number of connections
 connections = 0
 
 #ip and port numbers
-<<<<<<< HEAD:Final v2/backup p2p_i/P2P_i.py
 l_ip = '172.20.10.3'   #local ip now on trinity IP
 
-=======
-l_ip = '172.20.10.2'   #local ip
-ip = '172.20.10.2'     #dest ip
->>>>>>> 54cc9082ec4fc6d0a2d6c55485dc110c796e4758:Final v2/P2P_improved.py
 
 udp_l_port = (50000 + int(my_p_num))     #listening port
 udp_s_port = (50100 +  int(my_p_num))     #source port for sender
 
 tcp_s_port = (50000 + 10*int(my_p_num) )  #tcp local server address
-<<<<<<< HEAD:Final v2/backup p2p_i/P2P_i.py
 tcp_s_adr = ('172.20.10.3', tcp_s_port) #tcp local server address
 
 p_port = 50000 #base port for new peers
 p_addr = ('172.20.10.2', p_port) #base address for new peers
-=======
-tcp_s_adr = ('172.20.10.2', tcp_s_port) #tcp local server address
-
-p_port = 50000 #base port for new peers
-p_addr = ('172.20.10.3', p_port) #base address for new peers
->>>>>>> 54cc9082ec4fc6d0a2d6c55485dc110c796e4758:Final v2/P2P_improved.py
 
 rsp_d_ip = 0 #ip address of most recent peer 
 
@@ -121,11 +109,7 @@ def listen():
     
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((l_ip, udp_l_port))
-<<<<<<< HEAD:Final v2/backup p2p_i/P2P_i.py
     #print (f'listening on {l_ip}, {udp_l_port}')
-=======
-    print ('listening',(print({l_ip},{udp_l_port})))
->>>>>>> 54cc9082ec4fc6d0a2d6c55485dc110c796e4758:Final v2/P2P_improved.py
     
     
     while True:
@@ -201,12 +185,11 @@ def listen():
 #function to send typed messages to peer
 def send_message( udp_d_port):
             #opens the udp sending socket 
-            print(udp_d_port)
             send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             send_sock.bind((l_ip, udp_s_port))
             
-            print(udp_d_port)
-            print(d_ip)
+            #print(udp_d_port)
+            #print(d_ip)
             
             d_adr = (str(d_ip),udp_d_port)
             #print(d_adr)
@@ -340,12 +323,11 @@ def main():
             else:
                 udp_d_port = int(port[0])
             
-            print(f"{udp_d_port}\n")
+                #print(f"{udp_d_port}\n")
             print("Commands: 'msg' -talk to peer, 'file', send database to peer")
             cmd = input('Enter command: \n')
             
             if (cmd == 'msg'):
-                print(udp_d_port,d_ip)
                 send_message( udp_d_port)
             elif(cmd == 'file'):
                 send_file( udp_d_port)
