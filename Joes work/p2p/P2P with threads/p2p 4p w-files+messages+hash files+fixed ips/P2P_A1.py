@@ -60,7 +60,7 @@ def msg_server():
     msg_server.bind(tcp_s_adr)
     msg_server.listen(10)
     
-    print(f"[*] Listening as {tcp_s_adr}")
+    print(f"[*] Listening as message server {tcp_s_adr}")
     client_socket, address = msg_server.accept()
     print(f"[+] {address} is connected.")
     
@@ -113,13 +113,13 @@ def listen():
     
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((l_ip, udp_l_port))
-    print ('listening')
+    #print ('listening')
     
     
     while True:
         #blocking call reads in and decodes data 
         data = sock.recv(1024).decode('utf-8')
-        print (f"received data {data}") #debug
+        #print (f"received data {data}") #debug
         
         #if data is in right range to be a token
         if ((int(data) >= lower and int(data) <= upper) ):
@@ -129,7 +129,7 @@ def listen():
             if (result == False):
                 continue
             else:
-                print(f'peer:{result[0]} {result[1]} connected\n')
+                #print(f'peer:{result[0]} {result[1]} connected\n')
                 
                 #marker for file or text data
                 marker = sock.recv(1024).decode('utf-8')
@@ -268,8 +268,17 @@ def send_file( udp_d_port):
     
             p_port = 50000
             break 
-    
+
+#function to print the current data base        
+def print_Dbase():
+    with open(filepath, "r") as file:
+        
+        file_contents = file.read()
+        print(file_contents)
+
+#function to handle user inputted peer number and return address if peer recognised    
 def peer_to_ip_and_port(number):
+    
     check = number_check(number)
     if (check ==False):
         return False
@@ -284,16 +293,15 @@ def peer_to_ip_and_port(number):
     return True 
     #shouldnt need to anything else as ip+port should be in the global array but declared in there respective functions idk at this point
 
-def print_Dbase():
-    with open(filepath, "r") as file:
-        
-        file_contents = file.read()
-        print(file_contents)
-#reads in input and sends to peer
+
+
 def main():
+    
+    #starts the listener thread
     listener = threading.Thread(target=listen, daemon=True)
     listener.start()
     
+    #gets token number of this device frm file and update gloabl variable
     global my_token
     my_token = get_my_token(my_p_num)
   

@@ -20,12 +20,12 @@ port = []
 upper = 99999999999999
 lower = 100000
 #file location and size
-filepath = 'C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Final_v1\\cobined folder\\DataBase_A\\DATABASE.txt'
+filepath = 'C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Final_v1\\cobined folder\\DataBase_B\\DATABASE.txt'
 filesize = os.path.getsize(filepath)
 
 #Tokens to be replaced
 
-my_p_num = '1' 
+my_p_num = '2' 
 my_token = 1
 
 
@@ -91,7 +91,7 @@ def file_server():
     filename = os.path.basename(filename)
     filesize = int(filesize)
     #progress bar
-    progress = tqdm.tqdm(range(filesize), f"Receiving {filename}", unit="B", unit_scale=True, unit_divisor=1024)
+    #progress = tqdm.tqdm(range(filesize), f"Receiving {filename}", unit="B", unit_scale=True, unit_divisor=1024)
     #while loop reads in bytes, saves bytes and then overwrites local file with these bytes 
     while True:
         bytes_read = client_socket.recv(BUFFER_SIZE)
@@ -99,7 +99,7 @@ def file_server():
             break
         f = open(filepath, "wb")
         f.write(bytes_read)
-        progress.update(len(bytes_read))
+    #    progress.update(len(bytes_read))
     client_socket.close()
     file_server.close()
     
@@ -254,7 +254,7 @@ def send_file( udp_d_port):
             
             #prints local progress message
             filename = os.path.basename(filepath)
-            progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
+           # progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
             
             #reads file in byte wise and sends final packet to peer
             with open(filepath, "rb") as f:
@@ -263,7 +263,7 @@ def send_file( udp_d_port):
                     if not bytes_read:
                         break
                     s.sendall(bytes_read)
-                    progress.update(len(bytes_read))
+                  #  progress.update(len(bytes_read))
             s.close()
     
             p_port = 50000
@@ -309,10 +309,11 @@ def main():
             udp_d_port = int(port[0])
         
             #print(f"{udp_d_port}\n")
-            print("Commands: 'msg' -talk to peer, 'file', send database to peer, 'view' view the current database ")
+            print("Commands: 'msg' -talk to peer, 'file', send database to peer, 'view' view the current database/add ")
             cmd = input('Enter command: \n')
-        
-        if (cmd == 'msg'):
+        if (cmd == 'add'):
+            database_insert(filepath)
+        elif (cmd == 'msg'):
             send_message( udp_d_port)
         elif(cmd == 'file'):
             send_file( udp_d_port)

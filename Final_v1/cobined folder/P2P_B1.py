@@ -20,7 +20,7 @@ port = []
 upper = 99999999999999
 lower = 100000
 #file location and size
-filepath = 'C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Joes work\\p2p\\P2P with threads\\p2p 4 peers with files\\DataBase_B\\DATABASE.txt'
+filepath = 'C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Final_v1\\cobined folder\\DataBase_B\\DATABASE.txt'
 filesize = os.path.getsize(filepath)
 
 #Tokens to be replaced
