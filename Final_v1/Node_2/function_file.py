@@ -56,22 +56,22 @@ def ip_fetcher(token):
     f.close
     #print ("lines in token",count)
     with open ('token.txt',"r+") as f:
-            content =f.readline()
-            #print(content)
             i=0
             for i in range((count)-1):
                 content=f.readline()
                 contentsplit = content.split(",")
                 tkn = int(contentsplit[2])
-                #print(tkn)
+                #print (f"token {token}")
+                #print(f"tkn {tkn}")
                 #print(int(token))
                 if int(token) == tkn :
                     print("Token is in database")
                     storage = [contentsplit[0],contentsplit[1]]
                     f.close
-                    print (storage)
+                    #print (storage)
                     return storage  
             print("token was not found in database")  
+            return False
 
 
 #function checks to see if the input is a postive,whole number and that number has an associated address attached to it.
@@ -88,7 +88,7 @@ def number_check(number):
             print("Input must be postive")
             return False
         elif numbe >count:
-            print("There is no peer address saved with this input,try something smaller such as",count)
+            print("There is no peer address saved with this input")
             return False
         else:
             return True
@@ -116,6 +116,35 @@ def addres_arrays(numbercorrected):
     #print(storage)
     return storage
 
+#stores array of peer tokens from file for access
+def token_arrays(numbercorrected):
+    store=[]
+    y=0
+    file =  open("token.txt")
+    for pos, l_num in enumerate(file):
+        # check if the line number is specified in the lines to read array
+        if pos in numbercorrected:
+            # print the required line number
+            store.append(l_num.strip("\n"))
+            #print(store)
+            y=y+1
+    storage =[]
+    for z in range(y):
+        temp = store[z].split(",")
+        storage.extend([temp[2]])
+    #print(storage)
+    return storage
+
+#return local token number from list 
+def get_my_token(my_p_num):
+    my_p_num =str(my_p_num)
+    correctnums =splitting(my_p_num)
+    storage = []
+
+    storage = token_arrays(correctnums)
+
+    return storage[0]
+
 #function that breaks storage down and gives the ip address that is necessary
 def ip_array(storage):
     global ipfull
@@ -142,20 +171,7 @@ def splitting(numbers):
     numbercorrected = [x - 1 for x in number]
     return numbercorrected
 
-#function 1 works BUT ONLY WITH AN INPUT look at main underneath, that is how i got it to work. what ever number is must be inputed from a user to work
-def peer_to_ip_and_port(number):
-    check = number_check(number)
-    if (check ==False):
-        return False
-    correctnums =splitting(number)
-    storage = []
-    ip = []
-    port =[]
-    storage = addres_arrays(correctnums)
-    ip = ip_array(storage)
-    port = port_array(storage)
-    return True 
-    #shouldnt need to anything else as ip+port should be in the global array but declared in there respective functions idk at this point
+
 
 
 """

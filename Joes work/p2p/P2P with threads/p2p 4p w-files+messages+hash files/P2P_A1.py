@@ -7,18 +7,27 @@ import os
 import os.path
 import time
 
+from function_file import *
+
 BUFFER_SIZE = 65536
 SEPARATOR = "<SEPARATOR>"
 
+#array for storing adresses of peers
+d_ip = '127.0.0.1'
+port = []
+
+#ranges for potential tokens 
+upper = 99999999999999
+lower = 100000
 #file location and size
 filepath = 'C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Joes work\\p2p\\P2P with threads\\p2p 4 peers with files\\DataBase_A\\DATABASE.txt'
 filesize = os.path.getsize(filepath)
 
 #Tokens to be replaced
-token = '1' 
-p1 = '3'
-p2 = '4'
-p3 = '2'
+
+my_p_num = '1' 
+my_token = 1
+
 
 #number of connections
 connections = 0
@@ -27,14 +36,14 @@ connections = 0
 l_ip = '127.0.0.1'   #local ip
 ip = '127.0.0.1'     #dest ip
 
-udp_l_port = (50000 + int(token))     #listening port
-udp_s_port = (50100 +  int(token))     #source port for sender
+udp_l_port = (50000 + int(my_p_num))     #listening port
+udp_s_port = (50100 +  int(my_p_num))     #source port for sender
 
-tcp_s_port = (50000 + 10*int(token) )  #tcp local server address
-tcp_s_adr = (ip, tcp_s_port) #tcp local server address
+tcp_s_port = (50000 + 10*int(my_p_num) )  #tcp local server address
+tcp_s_adr = ('127.0.0.1', tcp_s_port) #tcp local server address
 
 p_port = 50000 #base port for new peers
-p_addr = (ip, p_port) #base address for new peers
+p_addr = ('127.0.0.1', p_port) #base address for new peers
 
 rcved = False #boolean to indicate whether or not peer TCP Connection recievd
 
@@ -70,7 +79,7 @@ def file_server():
     file_server.bind(tcp_s_adr)
     file_server.listen(10)
     
-    print(f"[*] Listening as {tcp_s_adr}")
+    print(f"[*] Listening as file server {tcp_s_adr}")
     client_socket, address = file_server.accept()
     print(f"[+] {address} is connected.")
     received = client_socket.recv(BUFFER_SIZE).decode()
@@ -98,6 +107,7 @@ def file_server():
 #function opened in new thread
 #function sets up an always on udp server socket for receiving messages from peers  
 def listen():
+    
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind((l_ip, udp_l_port))
     print ('listening')
@@ -106,42 +116,49 @@ def listen():
     while True:
         #blocking call reads in and decodes data 
         data = sock.recv(1024).decode('utf-8')
-        #print (f"received data {data}") #debug
+        print (f"received data {data}") #debug
         
-        #if peer is on peer list then handle new connection
-        if ((data == p1 or data ==  p2 or data == p3 or data == token ) ):
-            print(f'peer: {data} connected\n')
-            #marker for file or text data
-            marker = sock.recv(1024).decode('utf-8')
-            #increments connection count
-            global connections 
-            connections = connections + 1
-            
-            #update tcp_s port and address, this is where our local tcp server socket will be binded to 
-            global tcp_s_port
-            tcp_s_port = tcp_s_port + connections
-            global tcp_s_adr
-            tcp_s_adr = (ip, tcp_s_port)
-            
-            #update the port number of the peers udp listening port 
-            udp_d_port = 50000 + int(data)
-            #print(udp_d_port)
-            
-            #open TCP Server thread
-            if (marker == 'f'):
-                f_server = threading.Thread(target=file_server, daemon=True)
-                f_server.start()
-            elif (marker == 't'):
-                m_server = threading.Thread(target=msg_server, daemon=True)
-                m_server.start()
-            
-            
-            #send our local tcp server port to the peer
-            send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-            send_sock.bind((l_ip, udp_s_port))
-            send_sock.sendto((str(tcp_s_port)).encode(), (ip,udp_d_port ))
-            send_sock.close()
-            print(f"server address{tcp_s_adr}sent to udp port{udp_d_port}")
+        #if data is in right range to be a token
+        if ((int(data) >= lower and int(data) <= upper) ):
+            result = ip_fetcher(data)
+            #print(f'peer:{result[0]} {result[1]} connected\n')
+    
+            if (result == False):
+                continue
+            else:
+                print(f'peer:{result[0]} {result[1]} connected\n')
+                
+                #marker for file or text data
+                marker = sock.recv(1024).decode('utf-8')
+                #increments connection count
+                global connections 
+                connections = connections + 1
+                
+                #update tcp_s port and address, this is where our local tcp server socket will be binded to 
+                global tcp_s_port
+                tcp_s_port = tcp_s_port + connections
+                global tcp_s_adr
+                tcp_s_adr = ('127.0.0.1', tcp_s_port)
+                
+                #update the port number of the peers udp listening port 
+                udp_d_port = int(result[1])
+                #print(udp_d_port)
+                
+                #open TCP Server thread
+                if (marker == 'f'):
+                    f_server = threading.Thread(target=file_server, daemon=True)
+                    f_server.start()
+                elif (marker == 't'):
+                    m_server = threading.Thread(target=msg_server, daemon=True)
+                    m_server.start()
+                
+                
+                #send our local tcp server port to the peer
+                send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+                send_sock.bind((l_ip, udp_s_port))
+                send_sock.sendto((str(tcp_s_port)).encode(), ('127.0.0.1',udp_d_port ))
+                send_sock.close()
+                #print(f"server address{tcp_s_adr}sent to udp port{udp_d_port}") #debug
             
         #numbers in this range are receved tcp port numbers
         elif (int(data) >= 50000 and int(data) <=60000):
@@ -150,7 +167,7 @@ def listen():
             p_port = int(data)
             
             global p_addr
-            p_addr = (ip, p_port)
+            p_addr = ('127.0.0.1', p_port)
             #print(f"new peer address received {p_addr}") #debug
             global rcved
             
@@ -158,30 +175,38 @@ def listen():
             rcved = True 
             
         else:
-            print ("Unkown peer, connection blocked\n")
+            print ("data unrecognised, connection blocked\n")
 
 #function to send typed messages to peer
-def send_message(ip, udp_d_port):
+def send_message(d_ip, udp_d_port):
             #opens the udp sending socket 
             send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             send_sock.bind((l_ip, udp_s_port))
-            send_sock.sendto(token.encode(), (ip, udp_d_port))
+            
+            #print(udp_d_port)
+            #print(d_ip)
+            
+            #include d_ips //////////////////////////////////////////////////////////////////
+            send_sock.sendto(str(my_token).encode(), ( '127.0.0.1', udp_d_port))
             
             time.sleep(0.1)
             marker = 't'
-            send_sock.sendto(marker.encode(), (ip, udp_d_port))
+            send_sock.sendto(marker.encode(), ('127.0.0.1', udp_d_port))
             send_sock.close()
+            
            
             global p_port 
             global rcved
             
             time.sleep(0.2)
             #waits for peer to send back the tcp port number, received will be true here
-            print(f"waiting for the peer socket address")
+            #print(f"waiting for the peer socket address")
             while True:
                 if (rcved == True):
                     #open tcp client and send message to peer tcp peer 
                     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
+                    print(p_addr)
+                    
                     s.connect((p_addr))
                     msg = input('Input peer message: \n ').encode('utf-8')
                     s.send(msg)
@@ -195,10 +220,10 @@ def send_file(ip, udp_d_port):
      
      send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
      send_sock.bind((l_ip, udp_s_port))
-     send_sock.sendto(token.encode(), (ip, udp_d_port))
+     send_sock.sendto(my_token.encode(), ('127.0.0.1', udp_d_port))
      time.sleep(0.1)
      marker = 'f'
-     send_sock.sendto(marker.encode(), (ip, udp_d_port))
+     send_sock.sendto(marker.encode(), ('127.0.0.1', udp_d_port))
      send_sock.close()
      #opens the udp sending socket 
      
@@ -207,7 +232,7 @@ def send_file(ip, udp_d_port):
      
      time.sleep(0.2)
      #waits for peer to send back the tcp port number, received will be true here
-     print(f"waiting for the peer socket address")
+     #print(f"waiting for the peer socket address")
      while True:
         if (rcved == True):
             #open tcp client and sends filename and size to peer tcp peer 
@@ -232,27 +257,47 @@ def send_file(ip, udp_d_port):
             p_port = 50000
             break 
     
-
+def peer_to_ip_and_port(number):
+    check = number_check(number)
+    if (check ==False):
+        return False
+    correctnums =splitting(number)
+    storage = []
+    global d_ip
+    global port
+    storage = addres_arrays(correctnums)
+    d_ip = ip_array(storage)
+    port = port_array(storage)
+    return True 
+    #shouldnt need to anything else as ip+port should be in the global array but declared in there respective functions idk at this point
 
 #reads in input and sends to peer
 def main():
     listener = threading.Thread(target=listen, daemon=True)
     listener.start()
     
+    global my_token
+    my_token = get_my_token(my_p_num)
+  
     time.sleep(0.2)
     while True:  
         peer = input('Enter peer token number:\n')
-        
-        if(peer != p1 and peer != p2 and peer != p3):
-            print ('Peer unkown\n')
+        check = peer_to_ip_and_port(peer)
+        #print(check)
+        if(check == False):
+            continue
         else:
-            udp_d_port = 50000 + int(peer)
+            global d_ip
+            udp_d_port = int(port[0])
+            d_ip = d_ip[0]
+            print(f"{udp_d_port}\n")
+            
             cmd = input('Enter command, msg or file: \n')
         
         if (cmd == 'msg'):
-            send_message(ip, udp_d_port)
+            send_message(d_ip, udp_d_port)
         elif(cmd == 'file'):
-            send_file(ip, udp_d_port)
+            send_file(d_ip, udp_d_port)
         
 if __name__ == "__main__":
     main()      
