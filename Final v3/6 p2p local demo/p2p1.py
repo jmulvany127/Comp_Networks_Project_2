@@ -16,32 +16,31 @@ port = []
 upper = 99999999999999
 lower = 100000
 #file location and size
-filepath = "C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Final v3\\DataBase_A\\DATABASE.txt"
+filepath = "C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Final v3\\6 p2p local demo\\DATABASE2.txt"
 filesize = os.path.getsize(filepath)
 
-#Tokens to be replaced
-##token gen implemented
-##assuming my_p_numb is where in the master token list where the peer is i.e. this peer is number 3 on the list.
-my_p_num = '3' 
-my_token = 3
+
+my_p_num = '2'     #peer number of this device
+current_p_num = 0  #peer number of peer in current connection 
+my_token = 1       #gloabl variable declaration, will be replaced in functions
 
 #number of connections
 connections = 0
 
 #ip and port numbers
-l_ip = '172.20.10.3'   #local ip
-
+l_ip = '127.0.0.1'   #local ip- insert device ip here 
 
 udp_l_port = (50000 + int(my_p_num))     #listening port
 udp_s_port = (50100 +  int(my_p_num))     #source port for sender
 
 tcp_s_port = (50000 + 10*int(my_p_num) )  #tcp local server address
-tcp_s_adr = ('172.20.10.3', tcp_s_port) #tcp local server address
+tcp_s_adr = ('127.0.0.1', tcp_s_port) #tcp local server address
 
-p_port = 50000 #base port for new peers
-p_addr = ('172.20.10.2', p_port) #base address for new peers will be edited by funcyion 
+rsp_d_ip = '127.0.0.1' #ip address of most recent peer, will be edited by functions 
+p_port = 50000 #base port for new peers, will be edited by functions
+p_addr = (rsp_d_ip, p_port) #global variable base address for new peers will be edited by functions
 
-rsp_d_ip = 0 #ip address of most recent peer 
+
 
 
 rcved = False #boolean to indicate whether or not peer TCP Connection recievd
@@ -58,7 +57,7 @@ def msg_server():
     
     print(f"[*] Listening as message server {tcp_s_adr}")
     client_socket, address = msg_server.accept()
-    print(f"[+] {address} is connected.")
+    print(f"[+] peer {current_p_num} is connected.")
     
     recieved = client_socket.recv(1024)
     recieved = recieved.decode('utf-8')
@@ -80,7 +79,7 @@ def file_server():
     
     print(f"[*] Listening as file server {tcp_s_adr}")
     client_socket, address = file_server.accept()
-    print(f"[+] {address} is connected.")
+    print(f"[+] peer {current_p_num} is connected.")
     #received = client_socket.recv(BUFFER_SIZE).decode()
     #filename, filesize = received.split(SEPARATOR)
     
@@ -148,7 +147,9 @@ def listen():\
                 global rsp_d_ip
                 rsp_d_ip = (result[0])
                 rspd_adrs = (rsp_d_ip, rsp_d_port )
-
+                
+                global current_p_num        
+                current_p_num = result[2]
                 
                 #open TCP Server thread
                 if (marker == 'f'):
@@ -174,7 +175,7 @@ def listen():\
             
             global p_addr
             p_addr = (str(d_ip), p_port)
-            print(f"new peer address received {p_addr}") #debug
+            # print(f"new peer address received {p_addr}") #debug
             global rcved
             
             #upate the received variable
@@ -214,7 +215,7 @@ def send_message( udp_d_port):
                 if (rcved == True):
                     #open tcp client and send message to peer tcp peer 
                     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-                    print(p_addr)
+                    #print(p_addr)
                     
                     s.connect((p_addr))
                     msg = input('Input peer message: \n ').encode('utf-8')
