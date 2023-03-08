@@ -1,21 +1,15 @@
+Group 1
 README
 SETUP
-python , filepath, token . how token and peer lines work
-We wrote our program in python. You will need to have python downloaded and installed into path for the most optimal experience. Anytime that you want to  
-how to run locally and externally
-
-COMPILE
-
-
+We wrote our program in python. You will need to have python downloaded and installed into path for the most optimal experience. No external python libraries are needed for this program to work.
 
 RUN TESTCASES
-TESTCASES
-communication between another peer
+TESTCASES:
 SEND A MESSAGE
 VIEW DATA
 ADD TO DATABASE
-SEND DATABASE
-VIEW MODIFIED ON OTHER PEER
+SEND MODIFIED DATABASE
+VIEW MODIFIED DATABASE ON OTHER PEER
 
 Testcase 1 instructions :
 Instructions for Windows.
@@ -47,7 +41,7 @@ Fill in the data as it is requested one by one.
 After completely filling in the data, you can now view the database and see the changes that you have made.
 
 Sending your database to another peer.
-I recommend having added to the database before sending it so that you can visually see a difference, you should also view the database on the receiving peer before you send the new database to it.
+I recommend having added to the database before sending it so that you can visually see a difference,you dont have too though.You should also view the database on the receiving peer before you send the new database to it.
 
 After adding to the database, type cnct to connect to other peer, type the token value of the receiving peer (1 or 2), this should get you to the place you were when sending a message. Except this time type file instead.
 This should hopefully send the database to other peer, to check just type view on the receiving peer to ensure that the database was received.
@@ -62,13 +56,14 @@ try sending a message to peer 2 using it. Peer 2 should reject the connection as
  
 
 
+
 How to connect to another device
 The program right now is hardcoded so that it can only connect to itself. If you would like to connect it to another device.You will need to get the ip of both devices that you want to connect together.
 You need to change the token.txt file for both peers to do so.
 In the token.txt file there are 3 pieces of data per line, ip address,port number,token value, which are in that order.
 As we are changing the ip address, we are going to be changing the first piece of data. 
-Lets just try to change line 1 and 2 as they are associated with peer number 1 and peer number 2. Both ip address in line 1 and line 2 are going to needed to be swapped out with the new ones for both token.txt files.
-this should work
+Change line 1 and 2 as they are associated with peer number 1 and peer number 2. Both ip address in line 1 and line 2 are going to needed to be swapped out with the new ones for both token.txt files.
+
 
 
 
