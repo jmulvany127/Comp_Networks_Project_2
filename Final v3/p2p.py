@@ -16,32 +16,30 @@ port = []
 upper = 99999999999999
 lower = 100000
 #file location and size
-filepath = "C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Final v3\\DataBase_A\\DATABASE.txt"
-filesize = os.path.getsize(filepath)
+filepath = "C:\\Users\\jsmul\\Desktop\\College Year 3\\Semester 2\\3D3 Computer Networks\\Project 2\\project 2 repo\\Final v3\\6 p2p local demo\\DATABASE1.txt"
 
-#Tokens to be replaced
-##token gen implemented
-##assuming my_p_numb is where in the master token list where the peer is i.e. this peer is number 3 on the list.
-my_p_num = '3' 
-my_token = 3
+
+my_p_num = '1'     #peer number of this device
+current_p_num = 0  #peer number of peer in current connection 
+my_token = 1       #gloabl variable declaration, will be replaced in functions
 
 #number of connections
 connections = 0
 
 #ip and port numbers
-l_ip = '172.20.10.3'   #local ip
-
+l_ip = '127.0.0.1'   #local ip- insert device ip here 
 
 udp_l_port = (50000 + int(my_p_num))     #listening port
 udp_s_port = (50100 +  int(my_p_num))     #source port for sender
 
 tcp_s_port = (50000 + 10*int(my_p_num) )  #tcp local server address
-tcp_s_adr = ('172.20.10.3', tcp_s_port) #tcp local server address
+tcp_s_adr = ('127.0.0.1', tcp_s_port) #tcp local server address
 
-p_port = 50000 #base port for new peers
-p_addr = ('172.20.10.2', p_port) #base address for new peers will be edited by funcyion 
+rsp_d_ip = '127.0.0.1' #ip address of most recent peer, will be edited by functions 
+p_port = 50000 #base port for new peers, will be edited by functions
+p_addr = (rsp_d_ip, p_port) #global variable base address for new peers will be edited by functions
 
-rsp_d_ip = 0 #ip address of most recent peer 
+
 
 
 rcved = False #boolean to indicate whether or not peer TCP Connection recievd
@@ -51,14 +49,13 @@ rcved = False #boolean to indicate whether or not peer TCP Connection recievd
 #function sets up a tcp server socket for receiving messages from peers
 def msg_server():
     #print('entered tcp server thread\n') #debug
-    
     msg_server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     msg_server.bind(tcp_s_adr)
     msg_server.listen(10)
     
     print(f"[*] Listening as message server {tcp_s_adr}")
     client_socket, address = msg_server.accept()
-    print(f"[+] {address} is connected.")
+    print(f"[+] peer {current_p_num} is connected.")
     
     recieved = client_socket.recv(1024)
     recieved = recieved.decode('utf-8')
@@ -80,14 +77,7 @@ def file_server():
     
     print(f"[*] Listening as file server {tcp_s_adr}")
     client_socket, address = file_server.accept()
-    print(f"[+] {address} is connected.")
-    #received = client_socket.recv(BUFFER_SIZE).decode()
-    #filename, filesize = received.split(SEPARATOR)
-    
-    #filename = os.path.basename(filename)
-    #filesize = int(filesize)
-    #progress bar
-    #progress = tqdm.tqdm(range(filesize), f"Receiving {filename}", unit="B", unit_scale=True, unit_divisor=1024)
+    print(f"[+] peer {current_p_num} is connected.")
     #while loop reads in bytes, saves bytes and then overwrites local file with these bytes 
     while True:
         bytes_read = client_socket.recv(BUFFER_SIZE)
@@ -96,7 +86,6 @@ def file_server():
         f = open(filepath, "wb")
         f.write(bytes_read)
     print ("Database received")
-    #    progress.update(len(bytes_read))
     client_socket.close()
     file_server.close()
     
@@ -148,7 +137,9 @@ def listen():\
                 global rsp_d_ip
                 rsp_d_ip = (result[0])
                 rspd_adrs = (rsp_d_ip, rsp_d_port )
-
+                
+                global current_p_num        
+                current_p_num = result[2]
                 
                 #open TCP Server thread
                 if (marker == 'f'):
@@ -174,7 +165,7 @@ def listen():\
             
             global p_addr
             p_addr = (str(d_ip), p_port)
-            print(f"new peer address received {p_addr}") #debug
+            #print(f"new peer address received {p_addr}") #debug
             global rcved
             
             #upate the received variable
@@ -184,6 +175,7 @@ def listen():\
             print ("data unrecognised, connection blocked\n")
 
 #function to send typed messages to peer
+##connects to server using UDP, sends token to server,closes UDP socket to server, waits to open new tcp connection,connects to new port number usig a tcp connection,sends message,closes server
 def send_message( udp_d_port):
             #opens the udp sending socket 
             send_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -214,7 +206,7 @@ def send_message( udp_d_port):
                 if (rcved == True):
                     #open tcp client and send message to peer tcp peer 
                     s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
-                    print(p_addr)
+                    #print(p_addr)
                     
                     s.connect((p_addr))
                     msg = input('Input peer message: \n ').encode('utf-8')
@@ -224,7 +216,8 @@ def send_message( udp_d_port):
                     p_port = 50000
                     break 
         
-#function to send files to peer        
+#function to send files to peer , basically the same as send message except slight different because its send a file.    
+##connects to server using UDP, sends token to server,closes UDP socket to server, waits to open new tcp connection,connects to new port number usig a tcp connection,sends file ,closes server    
 def send_file( udp_d_port):
     
      d_adr = (str(d_ip),udp_d_port)
@@ -248,12 +241,6 @@ def send_file( udp_d_port):
             #open tcp client and sends filename and size to peer tcp peer 
             s = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
             s.connect((p_addr))
-            #s.send(f"{filepath}{SEPARATOR}{filesize}".encode())
-            
-            #prints local progress message
-            #filename = os.path.basename(filepath)
-           # progress = tqdm.tqdm(range(filesize), f"Sending {filename}", unit="B", unit_scale=True, unit_divisor=1024)
-            
             #reads file in byte wise and sends final packet to peer
             with open(filepath, "rb") as f:
                 while True:
@@ -276,7 +263,8 @@ def print_Dbase():
         file_contents = file.read()
         print(file_contents)
 
-#function to handle user inputted peer number and return address if peer recognised    
+#function to handle user inputted peer number and return address if peer recognised   
+## functions stores everything in globals and returns true if successful 
 def peer_to_ip_and_port(number):
     
     check = number_check(number)
@@ -291,13 +279,12 @@ def peer_to_ip_and_port(number):
     d_ip = d_ip_array[0]
     port = port_array(storage)
     return True 
-    #shouldnt need to anything else as ip+port should be in the global array but declared in there respective functions idk at this point
 
 
 
 def main():
     
-    #starts the listener thread
+    #starts the listener thread, which should always be listening.
     listener = threading.Thread(target=listen, daemon=True)
     listener.start()
     

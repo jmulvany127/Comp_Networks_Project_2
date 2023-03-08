@@ -16,7 +16,7 @@ port = []
 upper = 99999999999999
 lower = 100000
 #file location and size
-filepath = "C:\\CSU23021\\Comp_Networks_Project_2\\Final v3\\6 p2p local demo\\DATABASE1.txt"
+filepath = "DATABASE1.txt"
 
 
 my_p_num = '1'     #peer number of this device

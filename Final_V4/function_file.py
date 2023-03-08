@@ -1,6 +1,8 @@
+##function file add database , add p2p a1 listen return false to all files
+## function that requests a database update,get tokens
 import os.path
 
-#function that inserts into database
+
 def database_insert(filepath):
     #if token doesnt exist write here rn
         if os.path.isfile(filepath) != True:
@@ -34,8 +36,8 @@ def database_insert(filepath):
                 print("Database was written to")
                 #print(token)
                 return
-            
-
+###i was able to get this function to work combined with sender_token sending into receiver_token. I think it works
+##ip address should probably be taken from serversocket.accept, i think i see it taken from it, address[0] or something like that
 #create token.txt, if token.txt already exists, it will open token.txt, if the token is already in the file it will do nothing,if the token is not in the file it will add it, it requires ip address,port,token, addr[0] was were the ip address was stored,you may need to fix this function before it works
 def token_insert(ip,port,token):
     #if token doesnt exist write here rn
@@ -227,3 +229,15 @@ def splitting(numbers):
     numbercorrected = [x - 1 for x in number]
     return numbercorrected
 
+
+
+
+"""
+#function 1 example
+def main():
+    print("enter peer number which you want to connect to")
+    numbers = input("")
+    peer_to_ip_and_port(numbers)
+    print(portfull,ipfull)
+main()
+"""
