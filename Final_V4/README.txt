@@ -1,9 +1,9 @@
 Group 1
 README
 SETUP
-We wrote our program in python. You will need to have python downloaded and installed into path for the most optimal experience. No external python libraries are needed for this program to work.
+We wrote our program in python. You will need to have python downloaded and installed into path for the most optimal experience.Our program was written in python version 3.11.2. We didnt need any external python libraries need to be downloaded for this to work.
 
-RUN TESTCASES
+
 TESTCASES:
 SEND A MESSAGE
 VIEW DATA
@@ -11,16 +11,18 @@ ADD TO DATABASE
 SEND MODIFIED DATABASE
 VIEW MODIFIED DATABASE ON OTHER PEER
 
-Testcase 1 instructions :
-Instructions for Windows.
-Open the testcases folder and go into the testcase1 folder.You should see two different folders,token_1 and token_2. It is going to be necessary to open two seperate command prompts.
+Testcase instructions :
+
+Instructions for setup on Windows (We both used windows)
+
+Open the testcases folder and go into the testcase1 folder.You should see two different folders,peer_1 and peer_2. It is going to be necessary to open two seperate command prompts.
 We are going to want to run the p2p.py file in token_1, this can be run command prompt on windows by typing cmd into the file directory at the top of file explorer and then using the command python p2p.py in the prompt.
 We are then going to want to run the p2p1.py in token_2. type cmd in token_2 and use "python p2p1.py" in the prompt.
-Hopefully this should have opened both programs in seperate command prompts
+p2p.py and p2p1.py are the same programs, the only difference between them is the fact that line 22 on p2p1.py is equal to 2 instead of 1 of p2p.py 
+Hopefully this should have opened both programs in seperate command prompts and should be able to connect over 127.0.0.1 .
 
 
-Sending a message from 1 peer to another
-
+Sending a message from one peer to another peer
 Type cnct to begin the connection proccess in the prompt.
 When asked about the peer number to connect to check which program is being run.
 if you are running p2p.py and want to connect to p2p1.py, you need to input "2".
@@ -53,20 +55,23 @@ Put the wrong peer number in while connecting, type a name in, put a number larg
 
 try changing the token value of your peer in the token.txt file (it is the third value on any line, assuming that you are peer 1 you would need to change the token value on first line of the token.txt file).
 try sending a message to peer 2 using it. Peer 2 should reject the connection as the token value is not on its list.
+try sending a message to a peer that isnt on the network(any number above 2 but below the amount of lines on token.txt)
  
-
-
-
+ 
 How to connect to another device
 The program right now is hardcoded so that it can only connect to itself. If you would like to connect it to another device.You will need to get the ip of both devices that you want to connect together.
-You need to change the token.txt file for both peers to do so.
+You need to change the token.txt file for both peers to do so 
 In the token.txt file there are 3 pieces of data per line, ip address,port number,token value, which are in that order.
 As we are changing the ip address, we are going to be changing the first piece of data. 
 Change line 1 and 2 as they are associated with peer number 1 and peer number 2. Both ip address in line 1 and line 2 are going to needed to be swapped out with the new ones for both token.txt files.
+You must also change l_ip on line 30 and also change tcp_s_adr on line 37 , of the p2p program, to the machines(the one it is running on) IP address.
+
+After making these changes it should be able to connect together
 
 
 
 
 
-
-
+extra unnecessary stuff
+function_file is python file that stores all of our extra functions.
+When we connected our laptops together we had to disable windows firewall. Not sure if you will need to.

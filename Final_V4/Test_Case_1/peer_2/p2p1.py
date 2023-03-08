@@ -16,10 +16,10 @@ port = []
 upper = 99999999999999
 lower = 100000
 #file location and size
-filepath = "DATABASE1.txt"
+filepath = "DATABASE2.txt"
 
 
-my_p_num = '1'     #peer number of this device
+my_p_num = '2'     #peer number of this device
 current_p_num = 0  #peer number of peer in current connection 
 my_token = 1       #gloabl variable declaration, will be replaced in functions
 
